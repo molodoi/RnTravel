@@ -11,7 +11,7 @@ import { Navigation } from '../../type/types';
 import {
     emailValidator,
     passwordValidator
-  } from '../../core/utils';
+} from '../../core/utils';
 
 type Props = {
     navigation: Navigation;
@@ -31,11 +31,12 @@ const RegisterScreen = ({ navigation }: Props) => {
             setPassword({ ...password, error: passwordError });
             return;
         }
-        auth.register();
+
+        auth.register(email.value, password.value);
     };
 
     return (
-        <Background>            
+        <Background>
             <MyLogoSvg width={200} height={50} />
             <Header>Create Account</Header>
             <TextInput

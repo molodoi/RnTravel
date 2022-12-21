@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+
 import { Text } from 'react-native-paper';
+import Background from '../../component/Background';
+import Header from '../../component/Header';
 import Button from '../../component/Button';
-import TextInput from '../../component/TextInput'
+import TextInput from '../../component/TextInput';
 
 import { theme } from '../../core/theme';
 import MyLogoSvg from '../../assets/logo.svg';
 
 import { useAuth } from '../../context/Auth';
 import { emailValidator, passwordValidator } from '../../core/utils';
-
-import Background from '../../component/Background';
-import Header from '../../component/Header';
 
 import { Navigation } from '../../type/types';
 
@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }: Props) => {
             return;
         }
 
-        auth.login();
+        auth.login(email.value, password.value);
     };
 
     return (

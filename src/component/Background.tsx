@@ -1,31 +1,31 @@
 import React, { memo } from 'react';
 import {
-  ImageBackground,
-  StyleSheet,
-  KeyboardAvoidingView
+    ImageBackground,
+    StyleSheet,
+    KeyboardAvoidingView
 } from 'react-native';
 
 type Props = {
-  children: React.ReactNode;
+    children: React.ReactNode;
 };
 
 const Background = ({ children }: Props) => (
-        <ImageBackground
-            source={require('../assets/background_dot.png')}
-            resizeMode="repeat"
-            style={styles.background}
-        >
-            <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <ImageBackground
+        source={require('../assets/background_dot.png')}
+        resizeMode="repeat"
+        style={styles.background}
+    >
+        <KeyboardAvoidingView style={styles.container} behavior="padding">
             {children}
-            </KeyboardAvoidingView>
-        </ImageBackground>
+        </KeyboardAvoidingView>
+    </ImageBackground>
 );
 
 const styles = StyleSheet.create({
     background: {
         flex: 1,
         width: '100%',
-        backgroundColor:'#ffffff',
+        backgroundColor: '#ffffff',
     },
     container: {
         flex: 1,

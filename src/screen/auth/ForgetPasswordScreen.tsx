@@ -1,13 +1,19 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+
+import { Text } from 'react-native-paper';
 import Background from '../../component/Background';
 import Header from '../../component/Header';
 import Button from '../../component/Button';
 import TextInput from '../../component/TextInput';
-import MyLogoSvg from '../../assets/logo.svg';
+
 import { theme } from '../../core/theme';
-import { Navigation } from '../../type/types';
+import MyLogoSvg from '../../assets/logo.svg';
+
+import { useAuth } from '../../context/Auth';
 import { emailValidator } from '../../core/utils';
+
+import { Navigation } from '../../type/types';
 
 type Props = {
     navigation: Navigation;
@@ -15,13 +21,15 @@ type Props = {
 
 const ForgetPasswordScreen = ({ navigation }: Props) => {
     const [email, setEmail] = useState({ value: '', error: '' });
+
+    const auth = useAuth();
     const send = () => {
         const emailError = emailValidator(email.value);
         if (emailError) {
             setEmail({ ...email, error: emailError });
             return;
         }
-        // Appeler le service d'envoie d'émail
+        auth.resetPassword(email.value);
         navigation.navigate('Login');
     };
     return (

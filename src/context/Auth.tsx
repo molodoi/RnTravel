@@ -6,9 +6,10 @@ import { AuthData, authService } from '../service/AuthService';
 type AuthContextData = {
     authData?: AuthData;
     loading: boolean;
-    login(): Promise<void>;
-    register(): Promise<void>;
+    login(email: string, password: string): void;
+    register(email: string, password: string): void;
     logout(): void;
+    resetPassword(email: string): void;
 };
 
 // Creation du Auth Context avec le type de data specifié AuthContextData et un objet vide
@@ -35,8 +36,10 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
                 // S'il y a des données, elles sont converties en un objet src/service/AuthService.ts::AuthData et l'état AuthData est mis à jour setAuthData.                
                 const _authData: AuthData = JSON.parse(authDataSerialized);
                 setAuthData(_authData);
+                setLoading(true);
             }
         } catch (error) {
+            console.log(error);
             // Gérer les ereurs
         } finally {
             // fin du chargement
@@ -45,12 +48,9 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
     }
 
     // Connecter l'utilisateur
-    const login = async () => {
+    const login = async (email: string, password: string) => {
         // Appeler le service en passant les informations d'identification fournies par l'utilisateur via un Form||InputText (e-mail et mot de passe).
-        const _authData = await authService.login(
-            'lucasgarcez@email.com',
-            '123456',
-        ); // Ceci est un Mock src/service/AuthService.ts::login 
+        const _authData = await authService.login(email, password); // src/service/AuthService.ts::login 
 
         // Initialiser les données dans le contexte, afin que l'application puisse envoyer l'utilisateur vers la partie authentifiée de l'application (AuthenticatedStackNavigator) 
         setAuthData(_authData);
@@ -59,13 +59,10 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         AsyncStorage.setItem('@AuthData', JSON.stringify(_authData));
     };
 
-    const register = async () => {
+    const register = async (email: string, password: string) => {
+        
         // Appeler le service en passant les informations d'identification fournies par l'utilisateur via un Form||InputText (e-mail et mot de passe).
-        const _authData = await authService.register(
-            'lucasgarcez@email.com',
-            '123456',
-            'password',
-        ); // Ceci est un Mock src/service/AuthService.ts::signIn 
+        const _authData = await authService.register(email, password); // src/service/AuthService.ts::signIn 
 
         // Initialiser les données dans le contexte, afin que l'application puisse envoyer l'utilisateur vers la partie authentifiée de l'application (AuthenticatedStackNavigator) 
         setAuthData(_authData);
@@ -82,9 +79,18 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
         await AsyncStorage.removeItem('@AuthData');
     };
 
+    // Reset Password
+    const resetPassword = async (email: string) => {
+        const _authData = await authService.resetPassword(email); // src/service/AuthService.ts::resetPassword 
+        // Supprimer les données du contexte, afin que l'application puisse renvoyer l'utilisateur vers la partie authentification de l'application (AuthStackNavigator : Screen Login, Register, etc..) 
+        setAuthData(undefined);
+        // Supprimer les données de l'Async Storage pour qu'elles ne soient PAS récupérées lors de la prochaine session.
+        await AsyncStorage.removeItem('@AuthData');
+    };
+
     return (
         // Ce composant sera utilisé pour encapsuler l'ensemble de l'application, de sorte que tous les composants auront accès au contexte
-        <AuthContext.Provider value={{ authData, loading, login, logout, register }}>
+        <AuthContext.Provider value={{ authData, loading, login, logout, register, resetPassword }}>
             {children}
         </AuthContext.Provider>
     );
